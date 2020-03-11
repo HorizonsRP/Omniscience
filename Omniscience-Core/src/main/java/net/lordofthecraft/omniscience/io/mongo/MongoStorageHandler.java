@@ -1,11 +1,7 @@
 package net.lordofthecraft.omniscience.io.mongo;
 
 import com.google.common.collect.Lists;
-import com.mongodb.MongoClientSettings;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
+import com.mongodb.*;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.IndexOptions;
@@ -15,6 +11,7 @@ import net.lordofthecraft.omniscience.Omniscience;
 import net.lordofthecraft.omniscience.io.RecordHandler;
 import net.lordofthecraft.omniscience.io.StorageHandler;
 import org.bson.Document;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Map;
@@ -41,33 +38,15 @@ public class MongoStorageHandler implements StorageHandler {
 
     @Override
     public boolean connect(Omniscience omniscience) {
-        Map<?, ?> serverList = omniscience.getConfig().getMapList("mongodb.servers").get(0);
-        List<ServerAddress> addressMongoCredentialMap = Lists.newArrayList();
-        boolean usesAuth = omniscience.getConfig().getBoolean("mongodb.usesauth");
         String username = omniscience.getConfig().getString("mongodb.user");
-        char[] password = omniscience.getConfig().getString("mongodb.password").toCharArray();
-        MongoCredential cred = MongoCredential.createCredential(username, OmniConfig.INSTANCE.getAuthenticationDatabaseName(), password);
-        for (Map.Entry<?, ?> server : serverList.entrySet()) {
-            String serverName = (String) server.getKey();
-            Map<String, Object> serverProperties = (Map<String, Object>) server.getValue();
-            String host = (String) serverProperties.get("address");
-            int port = (int) serverProperties.get("port");
-            addressMongoCredentialMap.add(new ServerAddress(host, port));
-        }
+        String password = omniscience.getConfig().getString("mongodb.password");
+        String ip = omniscience.getConfig().getString("mongodb.authenticationDatabase");
 
-        ClusterSettings clusterSettings = ClusterSettings
-                .builder()
-                .hosts(addressMongoCredentialMap)
-                .build();
+        MongoClientURI uri = new MongoClientURI(
+                "mongodb+srv://" + username + ":" + password + "@" + ip);
+        MongoClient mongoClient = new MongoClient(uri);
+        database = mongoClient.getDatabase("test");
 
-        MongoClientSettings settings = usesAuth ? MongoClientSettings.builder()
-                .applyToClusterSettings(builder -> builder.applySettings(clusterSettings))
-                .credential(cred)
-                .build() : MongoClientSettings.builder()
-                .applyToClusterSettings(builder -> builder.applySettings(clusterSettings))
-                .build();
-        MongoClient client = MongoClients.create(settings);
-        database = client.getDatabase(OmniConfig.INSTANCE.getDatabaseName());
         this.recordHandler = new MongoRecordHandler(this);
         try {
             MongoCollection<Document> collection = getCollection(collectionName);
