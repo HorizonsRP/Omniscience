@@ -144,10 +144,10 @@ public class MongoRecordHandler implements RecordHandler {
                 if (document.containsKey(PLAYER_ID.toString())) {
                     String uuid = document.getString(PLAYER_ID.toString());
                     OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
-                    if (player != null) {
-                        internalWrapper.set(CAUSE, player.getName());
-                    } else {
+                    if (player.getName() != null) {
                         internalWrapper.set(CAUSE, uuid);
+                    } else {
+                        internalWrapper.set(CAUSE, player.getName());
                     }
                 }
 
