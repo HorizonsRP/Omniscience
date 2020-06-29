@@ -4,13 +4,16 @@ import com.google.common.collect.ImmutableList;
 import net.lordofthecraft.omniscience.OmniConfig;
 import net.lordofthecraft.omniscience.api.entry.OEntry;
 import net.lordofthecraft.omniscience.listener.OmniListener;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.DaylightDetector;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Openable;
 import org.bukkit.block.data.type.*;
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class EventUseListener extends OmniListener {
@@ -32,6 +35,14 @@ public class EventUseListener extends OmniListener {
                     || (OmniConfig.INSTANCE.doCraftBookInteraction() && isCraftBookSign(e.getClickedBlock()))) {
                 OEntry.create().source(e.getPlayer()).use(e.getClickedBlock()).save();
             }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onTargetHit(ProjectileHitEvent e) {
+        if ((e.getEntity().getType().equals(EntityType.ARROW) || e.getEntity().getType().equals(EntityType.SPECTRAL_ARROW)) &&
+            e.getHitBlock() != null && e.getHitBlock().getType().equals(Material.TARGET)) {
+            OEntry.create().source(e.getEntity().getShooter()).use(e.getHitBlock()).save();
         }
     }
 
