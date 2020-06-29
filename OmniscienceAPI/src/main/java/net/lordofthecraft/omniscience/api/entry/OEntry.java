@@ -451,9 +451,8 @@ public final class OEntry {
             } else if (state instanceof Banner) {
                 wrapper.set(keyToWrite.then(BANNER_PATTERNS), ((Banner) state).getPatterns());
             } else if (state instanceof Jukebox) {
-                if (((Jukebox) state).getRecord() != null) {
-                    wrapper.set(keyToWrite.then(RECORD), ((Jukebox) state).getRecord());
-                }
+                ((Jukebox) state).getRecord();
+                wrapper.set(keyToWrite.then(RECORD), ((Jukebox) state).getRecord());
             }
         }
 

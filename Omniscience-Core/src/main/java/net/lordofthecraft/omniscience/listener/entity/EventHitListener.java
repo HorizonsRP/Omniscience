@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class EventHitListener extends OmniListener {
@@ -26,6 +27,13 @@ public class EventHitListener extends OmniListener {
         if (isEnabled("hit")
                 && (e.getDamager() instanceof Player
                 || e.getEntity() instanceof Player)) {
+            OEntry.create().source(e.getDamager()).hit(e.getEntity()).save();
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onEntityDamagedByBlock(EntityDamageByBlockEvent e) {
+        if (isEnabled("hit")) {
             OEntry.create().source(e.getDamager()).hit(e.getEntity()).save();
         }
     }
