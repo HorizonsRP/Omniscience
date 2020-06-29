@@ -132,30 +132,30 @@ public class EventBreakListener extends OmniListener {
     }
 
     private void saveMultiBreak(Object source, Block broken) {
-        if (broken.getType() == Material.CACTUS
-                || broken.getType() == Material.SUGAR_CANE
-                || broken.getType() == Material.KELP_PLANT) {
+        if (broken.getType() == Material.CACTUS ||
+            broken.getType() == Material.SUGAR_CANE ||
+            broken.getType() == Material.KELP_PLANT ||
+            broken.getType() == Material.BAMBOO) {
             Block step = broken.getRelative(BlockFace.UP);
-            while (step.getType() == Material.CACTUS
-                    || step.getType() == Material.SUGAR_CANE
-                    || step.getType() == Material.KELP_PLANT) {
+            while (step.getType() == Material.CACTUS ||
+                   step.getType() == Material.SUGAR_CANE ||
+                   step.getType() == Material.KELP_PLANT ||
+                   step.getType() == Material.BAMBOO) {
                 OEntry.create().source(source).brokeBlock(new LocationTransaction<>(step.getLocation(), step.getState(), null)).save();
                 saveDependantBreaks(source, step);
                 step = step.getRelative(BlockFace.UP);
             }
         } else if (broken.getBlockData() instanceof Bed) {
             Bed bed = (Bed) broken.getBlockData();
-            if (bed != null) {
-                final Block otherBlock;
-                if (bed.getPart() == Bed.Part.HEAD) {
-                    otherBlock = broken.getRelative(bed.getFacing().getOppositeFace());
-                } else {
-                    otherBlock = broken.getRelative(bed.getFacing());
-                }
-                if (otherBlock.getBlockData() instanceof Bed) {
-                    OEntry.create().source(source).brokeBlock(new LocationTransaction<>(otherBlock.getLocation(), otherBlock.getState(), null)).save();
-                    saveDependantBreaks(source, otherBlock);
-                }
+            final Block otherBlock;
+            if (bed.getPart() == Bed.Part.HEAD) {
+                otherBlock = broken.getRelative(bed.getFacing().getOppositeFace());
+            } else {
+                otherBlock = broken.getRelative(bed.getFacing());
+            }
+            if (otherBlock.getBlockData() instanceof Bed) {
+                OEntry.create().source(source).brokeBlock(new LocationTransaction<>(otherBlock.getLocation(), otherBlock.getState(), null)).save();
+                saveDependantBreaks(source, otherBlock);
             }
         }
         saveDependantBreaks(source, broken);
@@ -208,7 +208,7 @@ public class EventBreakListener extends OmniListener {
         }
         for (BlockFace face : DIRS) {
             Block relative = broken.getRelative(face);
-            if (relative != null && (getStyle(relative.getType()) == DependantStyle.WALL || getStyle(relative.getType()) == DependantStyle.ALL)) {
+            if (getStyle(relative.getType()) == DependantStyle.WALL || getStyle(relative.getType()) == DependantStyle.ALL) {
                 if (relative.getBlockData() instanceof Directional) {
                     Directional direct = (Directional) relative.getBlockData();
                     if (face == direct.getFacing()) {
@@ -380,6 +380,8 @@ public class EventBreakListener extends OmniListener {
             case OAK_BUTTON:
             case SPRUCE_BUTTON:
             case STONE_BUTTON:
+            case LANTERN:
+            case SOUL_LANTERN:
                 return DependantStyle.ALL;
             default:
                 return DependantStyle.NONE;

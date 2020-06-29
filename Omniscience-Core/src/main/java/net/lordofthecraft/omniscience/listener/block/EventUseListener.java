@@ -40,7 +40,7 @@ public class EventUseListener extends OmniListener {
         if (data instanceof Sign || data instanceof WallSign) {
             org.bukkit.block.Sign sign = (org.bukkit.block.Sign) block.getState();
             String line2 = sign.getLine(1);
-            return line2 != null && line2.startsWith("[");
+            return line2.startsWith("[");
         }
         return false;
     }
