@@ -13,6 +13,7 @@ import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.block.data.type.Door;
+import org.bukkit.block.data.type.Lantern;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -116,16 +117,14 @@ public class EventBreakListener extends OmniListener {
     private boolean writeBlockBreakForMetaData(MetadataValue value, List<Block> blocks, Object source) {
         if (value.getOwningPlugin() instanceof Omniscience) {
             OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(value.asString()));
-            if (player != null) {
-                blocks.stream()
-                        .filter(block -> block.getType() != Material.CAVE_AIR)
-                        .forEach(block -> {
-                            OEntry.create().source(player).brokeBlock(new LocationTransaction<>(block.getLocation(), block.getState(), null)).save();
-                            saveContainerDrops(source, block);
-                            //For rollbacks and restores dependents should be saved after the parent
-                            saveMultiBreak(source, block);
-                        });
-            }
+            blocks.stream()
+                    .filter(block -> block.getType() != Material.CAVE_AIR)
+                    .forEach(block -> {
+                        OEntry.create().source(player).brokeBlock(new LocationTransaction<>(block.getLocation(), block.getState(), null)).save();
+                        saveContainerDrops(source, block);
+                        //For rollbacks and restores dependents should be saved after the parent
+                        saveMultiBreak(source, block);
+                    });
             return true;
         }
         return false;
@@ -198,6 +197,11 @@ public class EventBreakListener extends OmniListener {
                 if (direct.getFacing().getOppositeFace() == BlockFace.UP) {
                     OEntry.create().source(source).brokeBlock(new LocationTransaction<>(up.getLocation(), up.getState(), null)).save();
                 }
+            } else if (up.getBlockData() instanceof Lantern) {
+                Lantern lantern = (Lantern) up.getBlockData();
+                if (!lantern.isHanging()) {
+                    OEntry.create().source(source).brokeBlock(new LocationTransaction<>(up.getLocation(), up.getState(), null)).save();
+                }
             }
         } else if (getStyle(up.getType()) == DependantStyle.TALL) {
             OEntry.create().source(source).brokeBlock(new LocationTransaction<>(up.getLocation(), up.getState(), null)).save();
@@ -221,6 +225,11 @@ public class EventBreakListener extends OmniListener {
             if (down.getBlockData() instanceof Directional) {
                 Directional direct = (Directional) down.getBlockData();
                 if (direct.getFacing().getOppositeFace() == BlockFace.DOWN) {
+                    OEntry.create().source(source).brokeBlock(new LocationTransaction<>(down.getLocation(), down.getState(), null)).save();
+                }
+            } else if (down.getBlockData() instanceof Lantern) {
+                Lantern lantern = (Lantern) down.getBlockData();
+                if (lantern.isHanging()) {
                     OEntry.create().source(source).brokeBlock(new LocationTransaction<>(down.getLocation(), down.getState(), null)).save();
                 }
             }
