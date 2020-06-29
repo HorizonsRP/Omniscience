@@ -1,10 +1,14 @@
 package net.lordofthecraft.omniscience.listener.block;
 
 import com.google.common.collect.ImmutableList;
+import net.lordofthecraft.omniscience.api.data.InventoryTransaction;
 import net.lordofthecraft.omniscience.api.data.LocationTransaction;
 import net.lordofthecraft.omniscience.api.entry.OEntry;
 import net.lordofthecraft.omniscience.listener.OmniListener;
+import net.lordofthecraft.omniscience.listener.item.EventInventoryListener;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Lectern;
 import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -25,6 +29,13 @@ public class EventPlaceListener extends OmniListener {
             return;
         }
 
+        if (event.getBlockPlaced().getType().equals(Material.LECTERN) && event.getBlockPlaced().getState() instanceof Lectern &&
+            (event.getItemInHand().getType().equals(Material.WRITTEN_BOOK) || event.getItemInHand().getType().equals(Material.WRITABLE_BOOK)) &&
+            isEnabled("deposit")) {
+            Lectern lectern = (Lectern) event.getBlockPlaced().getState();
+            EventInventoryListener.saveLecternTransaction(event.getPlayer(), event.getItemInHand(), lectern, InventoryTransaction.ActionType.DEPOSIT);
+            return;
+        }
         OEntry.create().source(event.getPlayer()).placedBlock(new LocationTransaction<>(event.getBlock().getLocation(), event.getBlockReplacedState(), event.getBlock().getState())).save();
     }
 

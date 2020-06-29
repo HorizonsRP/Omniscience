@@ -1,6 +1,7 @@
 package net.lordofthecraft.omniscience.listener.item;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import net.lordofthecraft.omniscience.Omniscience;
 import net.lordofthecraft.omniscience.api.data.InventoryTransaction;
 import net.lordofthecraft.omniscience.api.data.Transaction;
@@ -8,17 +9,26 @@ import net.lordofthecraft.omniscience.api.entry.OEntry;
 import net.lordofthecraft.omniscience.api.util.InventoryUtil;
 import net.lordofthecraft.omniscience.listener.OmniListener;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Container;
 import org.bukkit.block.DoubleChest;
+import org.bukkit.block.Lectern;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerTakeLecternBookEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.Objects;
+
+import static net.lordofthecraft.omniscience.api.data.InventoryTransaction.ActionType.DEPOSIT;
+import static net.lordofthecraft.omniscience.api.data.InventoryTransaction.ActionType.WITHDRAW;
 
 public class EventInventoryListener extends OmniListener {
 
@@ -86,6 +96,23 @@ public class EventInventoryListener extends OmniListener {
                         break;
                 }
             }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onTakeLecternBook(PlayerTakeLecternBookEvent e) {
+        if (w()) {
+            saveLecternTransaction(e.getPlayer(), e.getBook(), e.getLectern(), WITHDRAW);
+        }
+    }
+
+    public static void saveLecternTransaction(Player p, ItemStack book, Lectern lectern, InventoryTransaction.ActionType action) {
+        InventoryTransaction<ItemStack> transaction = new InventoryTransaction<>(book, book, book, 0,
+                                                                                 lectern.getInventory().getHolder(), action);
+        if (action.equals(WITHDRAW)) {
+            OEntry.create().player(p).withdrew(transaction, lectern.getLocation(), "Lectern").save();
+        } else if (action.equals(DEPOSIT)) {
+            OEntry.create().player(p).deposited(transaction, lectern.getLocation(), "Lectern").save();
         }
     }
 
