@@ -63,9 +63,10 @@ public class MongoStorageHandler implements StorageHandler {
         MongoClientSettings settings = usesAuth ? MongoClientSettings.builder()
                                                                      .applyToClusterSettings(builder -> builder.applySettings(clusterSettings))
                                                                      .credential(cred)
-                                                                     .build() : MongoClientSettings.builder()
-                                                                                                   .applyToClusterSettings(builder -> builder.applySettings(clusterSettings))
-                                                                                                   .build();
+                                                                     .build()
+                                                : MongoClientSettings.builder()
+                                                                     .applyToClusterSettings(builder -> builder.applySettings(clusterSettings))
+                                                                     .build();
         MongoClient client = MongoClients.create(settings);
         database = client.getDatabase(OmniConfig.INSTANCE.getDatabaseName());
 
