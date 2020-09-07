@@ -1,6 +1,7 @@
 package net.lordofthecraft.omniscience.listener.block;
 
 import com.google.common.collect.ImmutableList;
+import net.lordofthecraft.omniscience.Omniscience;
 import net.lordofthecraft.omniscience.api.data.InventoryTransaction;
 import net.lordofthecraft.omniscience.api.data.LocationTransaction;
 import net.lordofthecraft.omniscience.api.entry.OEntry;
@@ -50,11 +51,17 @@ public class EventPlaceListener extends OmniListener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onSignChange(SignChangeEvent event) {
-        Sign sign = (Sign) event.getBlock().getState();
-        for (int i = 0; i <= 3; i++) {
-            sign.setLine(i, event.getLine(i));
+        if (event.getBlock().getState() instanceof Sign) {
+            Sign sign = (Sign) event.getBlock().getState();
+            for (int i = 0; i <= 3; i++) {
+                if (event.getLine(i) != null) {
+                    sign.setLine(i, event.getLine(i));
+                }
+            }
+            OEntry.create().source(event.getPlayer()).placedBlock(new LocationTransaction<>(event.getBlock().getLocation(), null, sign)).save();
+        } else {
+            Omniscience.getPluginInstance().getLogger().info("Unaple to parse changed sign for; " + event.getBlock());
         }
-        OEntry.create().source(event.getPlayer()).placedBlock(new LocationTransaction<>(event.getBlock().getLocation(), null, sign)).save();
     }
 
     private boolean blockLocationsAreEqual(Location locA, Location locB) {
