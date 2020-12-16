@@ -44,7 +44,7 @@ Parameters are the meat of how you interact with Omniscience. This is how you fi
 Plugins can create their own parameters, so this list can never be fully complete. See the individual plugin's documentation for what it does.
 
 #
-##### Log Info
+#### Log Info
 ##### `r:<#>` - Radius
 * **Default:** `5` (Changable in `config.yml`)
 * **Usage:** Specify a number to filter your query to filter out any records not within a # box around your current in-game location.
@@ -77,7 +77,7 @@ Usage: Specify a shorthand time to filter out records older than the specified t
 * **Example:** `trg:COW`, `trg:COW,COBBLESTONE,127.0.0.1`, `trg:COBBLESTONE,!COW`
 
 #
-##### Player Info
+#### Player Info
 ##### `p:<username|uuid>` - Player
 * **Usage:** Specify a comma-seperated list of players or uuids to filter by that specific player. Add a `!` in front of their name to exclude players from the search.
 * **Example:** `p:501warhead`, `p:501warhead,Tofuus`, `p:501warhead,!Tofuus`
@@ -87,7 +87,7 @@ Usage: Specify a shorthand time to filter out records older than the specified t
 * **Example:** `i:192.168.0.1`, `i:192.168.0.1,!127.0.0.1`
 
 #
-##### Item/Block Info
+#### Item/Block Info
 ##### `b:<Block>` - Block
 * **Usage:** Specify a comma-seperated list of blocks to filter events that involve them. Add a `!` in front of the block to exclude it from the search. Will not work for items.
 * **Example:** `b:stone`, `b:stone,oak_log`, `b:stone,!oak_log`
