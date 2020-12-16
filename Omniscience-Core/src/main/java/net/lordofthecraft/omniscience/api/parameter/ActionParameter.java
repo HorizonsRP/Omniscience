@@ -17,11 +17,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class EventParameter extends BaseParameterHandler {
+public class ActionParameter extends BaseParameterHandler {
     //Credit to Prism for this regex
     private final Pattern pattern = Pattern.compile("[!]?[\\w,-\\\\*]+");
 
-    public EventParameter() {
+    public ActionParameter() {
         super(ImmutableList.of("a"));
     }
 

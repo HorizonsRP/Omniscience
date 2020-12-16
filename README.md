@@ -43,27 +43,22 @@ Parameters are the meat of how you interact with Omniscience. This is how you fi
 
 Plugins can create their own parameters, so this list can never be fully complete. See the individual plugin's documentation for what it does.
 
+#
+######Log Info
 ##### `r:<#>` - Radius
 * **Default:** `5` (Changable in `config.yml`)
 * **Usage:** Specify a number to filter your query to filter out any records not within a # box around your current in-game location.
 * **Example:** `r:100`
 
-##### `p:<username|uuid>` - Player
-* **Usage:** Specify a comma-seperated list of players or uuids to filter by that specific player. Add a `!` in front of their name to exclude players from the search.
-* **Example:** `p:501warhead`, `p:501warhead,Tofuus`, `p:501warhead,!Tofuus`
-
 ##### `t:<time>` - Time
+* **Alias:** `since`
 * **Default:** `3d` (Changable in `config.yml`)
 Usage: Specify a shorthand time to filter out records older than the specified time. 
 * **Example:** `t:2d3h4m5s` for 2 days, 3 hours, 4 minutes, and 5 seconds.
 
-##### `a:<event>` - Event
-* **Usage:** Specify a comma-seperated list of events to filter records by. Add a `!` in front of the event to exclude it from the search.
+##### `a:<action>` - Action
+* **Usage:** Specify a comma-seperated list of actions to filter records by. Add a `!` in front of the event to exclude it from the search.
 * **Example:** `a:break`, `a:place,break`, `a:place,!break`
-
-##### `m:<text>` - Message
-* **Usage:** Specify a comma-seperated list of words to search for in chat-related events. Add a `!` in front of the word to exclude it from the search.
-* **Example:** `m:badword`, `m:501warhead,smells`, `m:501warhead,smells,!jk`
 
 ##### `c:<text>` - Cause
 * **Usage:** Specify a comma-seperated list of words to search for as causes for events. Add a `!` in front of the word to exclude it from the search. Use `p:` for players, this is useful for searching for entity- and world- related events.
@@ -73,6 +68,26 @@ Usage: Specify a shorthand time to filter out records older than the specified t
 * **Usage:** Specify a comma-seperated list of entities to filter for events that involve them. Add a `!` in front of the entity type to exclude it from the search. The parameter will search for any event that has explicitly marked that it is involved with an entity of that type, whether it's a cause or target of such action
 * **Example:** `e:zombie`, `e:!player,zombie`
 
+##### `m:<text>` - Message
+* **Usage:** Specify a comma-seperated list of words to search for in chat-related events. Add a `!` in front of the word to exclude it from the search.
+* **Example:** `m:badword`, `m:501warhead,smells`, `m:501warhead,smells,!jk`
+
+##### `trg:<misc>` - Target
+* **Usage:** Specify a comma-seperated list of all-capital words to search for as targets. Add a `!` in front of the target to exclude it from the search.
+* **Example:** `trg:COW`, `trg:COW,COBBLESTONE,127.0.0.1`, `trg:COBBLESTONE,!COW`
+
+#
+######Player Info
+##### `p:<username|uuid>` - Player
+* **Usage:** Specify a comma-seperated list of players or uuids to filter by that specific player. Add a `!` in front of their name to exclude players from the search.
+* **Example:** `p:501warhead`, `p:501warhead,Tofuus`, `p:501warhead,!Tofuus`
+
+##### `ip:<ip>` - IP
+* **Usage:** Specify a comma-seperated list of involved IPs to filter events that involve them. Add a `!` in front of the IP to exclude it from the search.
+* **Example:** `i:192.168.0.1`, `i:192.168.0.1,!127.0.0.1`
+
+#
+######Item/Block Info
 ##### `b:<Block>` - Block
 * **Usage:** Specify a comma-seperated list of blocks to filter events that involve them. Add a `!` in front of the block to exclude it from the search. Will not work for items.
 * **Example:** `b:stone`, `b:stone,oak_log`, `b:stone,!oak_log`
@@ -80,3 +95,16 @@ Usage: Specify a shorthand time to filter out records older than the specified t
 ##### `i:<Material>` - Item
 * **Usage:** Specify a comma-seperated list of item materials to filter events that involve them. Add a `!` in front of the item material to exclude it from the search. Will not work for blocks.
 * **Example:** `i:iron_sword`, `i:iron_sword,diamond_sword`, `i:iron_sword,!diamond_sword`
+
+##### `d:<text>` - Item Description
+* **Usage:** Specify a comma-seperated list of words to search for in item descriptions. Add a `!` in front of the word to exclude it from the search.
+* **Example:** `d:badword`, `d:501warhead,smells`, `d:501warhead,smells,!jk`
+
+##### `n:<text>` - Item Name
+* **Usage:** Specify a comma-seperated list of words to search for in item names. Add a `!` in front of the word to exclude it from the search.
+* **Example:** `n:badword`, `n:501warhead,smells`, `n:501warhead,smells,!jk`
+
+##### `cu:<yes|no>` - Custom Item
+* **Usage:** Specify whether to only show interactions involving items with custom metadata.
+* **Example:** `cu:yes`, `cu:no`
+

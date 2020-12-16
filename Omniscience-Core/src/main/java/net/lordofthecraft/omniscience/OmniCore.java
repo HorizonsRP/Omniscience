@@ -139,7 +139,7 @@ final class OmniCore implements IOmniscience {
     }
 
     private void registerParameters() {
-        registerParameterHandler(new EventParameter());
+        registerParameterHandler(new ActionParameter());
         registerParameterHandler(new PlayerParameter());
         registerParameterHandler(new MessageParameter());
         registerParameterHandler(new RadiusParameter());
